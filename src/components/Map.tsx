@@ -8,8 +8,6 @@ import { Locate, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import 'leaflet/dist/leaflet.css';
 
-// Fix for default marker icon in Next.js
-import L from 'leaflet';
 
 const DEFAULT_CENTER: LatLngTuple = [31.5204, 74.3587]; // Lahore
 const DEFAULT_ZOOM = 13;
@@ -138,7 +136,7 @@ export default function Map() {
     const [newReportPosition, setNewReportPosition] = useState<LatLngTuple | null>(null);
 
     // Memoize icon to prevent recreation on re-renders, but safe for client-side
-    const customIcon = new L.Icon({
+    const customIcon = new Icon({
         iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
         iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
         shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
