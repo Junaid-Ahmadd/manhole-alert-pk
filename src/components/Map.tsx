@@ -11,36 +11,9 @@ import 'leaflet/dist/leaflet.css';
 // Fix for default marker icon in Next.js
 import L from 'leaflet';
 
-const customIcon = new L.Icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
-
 const DEFAULT_CENTER: LatLngTuple = [31.5204, 74.3587]; // Lahore
 const DEFAULT_ZOOM = 13;
 
-function LocationMarker() {
-    const [position, setPosition] = useState<LatLngTuple | null>(null);
-    const map = useMap();
-
-    useEffect(() => {
-        map.locate().on("locationfound", function (e) {
-            setPosition([e.latlng.lat, e.latlng.lng]);
-            map.flyTo(e.latlng, map.getZoom());
-        });
-    }, [map]);
-
-    return position === null ? null : (
-        <Marker position={position}>
-            <Popup>You are here</Popup>
-        </Marker>
-    );
-}
 
 // Separate component to handle map events and new reports
 function ReportLayer({
@@ -163,6 +136,17 @@ export default function Map() {
     const [mapKey, setMapKey] = useState(0); // Force re-render on locate
     const [reports, setReports] = useState<any[]>([]);
     const [newReportPosition, setNewReportPosition] = useState<LatLngTuple | null>(null);
+
+    // Memoize icon to prevent recreation on re-renders, but safe for client-side
+    const customIcon = new L.Icon({
+        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
 
     useEffect(() => {
         const fetchReports = async () => {
